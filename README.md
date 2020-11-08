@@ -3,5 +3,7 @@
 ## Installation
 
 ### ESP8266
-Add the following URL to Additional Boards Manager in the Settings:
-https://arduino.esp8266.com/stable/package_esp8266com_index.json
+- Add the following URL to Additional Boards Manager in the Settings:
+  https://arduino.esp8266.com/stable/package_esp8266com_index.json
+  
+- Install the ESP8266 Board Library from the Boradmanager.
