@@ -1,7 +1,7 @@
 #include <arduinoFFT.h>      //https://github.com/kosme/arduinoFFT
 //                           //https://github.com/G6EJD/ESP32-8266-Audio-Spectrum-Display
 
-#define NUM_BANDS  8
+#define NUM_BANDS  4
 #define READ_DELAY 50
 #define USE_RANDOM_DATA false
 
@@ -10,13 +10,13 @@
 
 arduinoFFT FFT = arduinoFFT();
 
-#define SAMPLES 512              //Must be a power of 2
+#define SAMPLES 256              //Must be a power of 2
 #define SAMPLING_FREQUENCY 40000 //Hz, must be 40000 or less due to ADC conversion time. Determines maximum frequency that can be analysed by the FFT.
 
 // Use ADC1 so that WiFi stuff doesnt interfere with ADC measurements
-#define ADC_PIN 36 // 36 = PIN VP on Lolin D32
+#define ADC_PIN A0 // 36 = PIN VP on Lolin D32
 
-int amplitude = 200;
+int amplitude = 300;
 unsigned int sampling_period_us;
 unsigned long microseconds;
 byte peak[] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -27,7 +27,6 @@ unsigned long newTime, oldTime;
 // LED Settings
 #define LED_COUNT 144
 #define LED_PIN   12
-
 WS2812FX ws2812fx = WS2812FX(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void displayBand(int band, int dsize)
@@ -43,12 +42,12 @@ void displayBand(int band, int dsize)
 
 void setup()
 {
-  Serial.begin(256000);
+  Serial.begin(115200);
   sampling_period_us = round(1000000 * (1.0 / SAMPLING_FREQUENCY));
   pinMode(ADC_PIN, INPUT);
 
   ws2812fx.init();
-  ws2812fx.setBrightness(32);
+  ws2812fx.setBrightness(250);
 
   // setup the custom effect
   uint32_t colors[] = {GREEN, YELLOW, RED};
@@ -84,15 +83,15 @@ void loop()
         displayBand(1, (int)vReal[i] / amplitude); // 250Hz
       if (i > 5 && i <= 7)
         displayBand(2, (int)vReal[i] / amplitude); // 500Hz
-      if (i > 7 && i <= 15)
+      if (i > 7 && i <= 10)
         displayBand(3, (int)vReal[i] / amplitude); // 1000Hz
-      if (i > 15 && i <= 30)
+      if (i > 10 && i <= 15)
         displayBand(4, (int)vReal[i] / amplitude); // 2000Hz
-      if (i > 30 && i <= 53)
+      if (i > 15 && i <= 30)
         displayBand(5, (int)vReal[i] / amplitude); // 4000Hz
-      if (i > 53 && i <= 200)
+      if (i > 30  && i <= 53)
         displayBand(6, (int)vReal[i] / amplitude); // 8000Hz
-      if (i > 200)
+      if (i > 53)
         displayBand(7, (int)vReal[i] / amplitude); // 16000Hz
     }
   }
